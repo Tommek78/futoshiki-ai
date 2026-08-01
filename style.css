@@ -212,3 +212,11 @@ select { background:var(--card); color:var(--text); padding:0 36px 0 12px; }
   user-select: none;
   -webkit-user-select: none;
 }
+
+
+.cell.editable input {
+  color: var(--orange);
+}
+.cell.editable.hint input {
+  color: var(--turquoise);
+}

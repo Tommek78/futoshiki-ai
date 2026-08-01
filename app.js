@@ -29,6 +29,13 @@ function setMessage(text="", type="") {
   message.className = `message ${type}`.trim();
 }
 
+function clearCheckFeedback() {
+  board.querySelectorAll(".cell.error, .cell.correct").forEach(cell => {
+    cell.classList.remove("error", "correct");
+  });
+  setMessage();
+}
+
 function updateTimer() {
   if (completed) return;
   const elapsed = Math.floor((Date.now() - startTime)/1000);
@@ -139,6 +146,7 @@ function renderBoard() {
 
 function selectInput(input) {
   if (!input || input.dataset.editable!=="true" || input.dataset.hinted==="true") return;
+  clearCheckFeedback();
   board.querySelectorAll(".cell.selected").forEach(c=>c.classList.remove("selected"));
   selectedInput=input;
   input.closest(".cell").classList.add("selected");
