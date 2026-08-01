@@ -52,19 +52,26 @@ function shuffle(array, rng) {
 }
 
 function makeSolution(rng) {
+  // A valid Latin square remains valid after arbitrary row, column
+  // and symbol permutations, plus an optional transpose.
+  const base = Array.from({length:N}, (_,r) =>
+    Array.from({length:N}, (_,c) => ((r + c) % N) + 1)
+  );
+
+  const rowOrder = shuffle([...Array(N).keys()], rng);
+  const colOrder = shuffle([...Array(N).keys()], rng);
   const symbols = shuffle([1,2,3,4,5,6], rng);
-  const rowShift = Math.floor(rng()*N);
-  const colShift = Math.floor(rng()*N);
-  const reverseRows = rng() > .5;
-  const reverseCols = rng() > .5;
+  const transpose = rng() > 0.5;
 
-  const rows = [...Array(N).keys()].map(i => reverseRows ? N-1-i : i);
-  const cols = [...Array(N).keys()].map(i => reverseCols ? N-1-i : i);
+  const permuted = rowOrder.map(r =>
+    colOrder.map(c => symbols[base[r][c] - 1])
+  );
 
-  return rows.map(r => cols.map(c => {
-    const index = (r + rowShift + c + colShift) % N;
-    return symbols[index];
-  }));
+  if (!transpose) return permuted;
+
+  return Array.from({length:N}, (_,r) =>
+    Array.from({length:N}, (_,c) => permuted[c][r])
+  );
 }
 
 function allEdges(solution) {

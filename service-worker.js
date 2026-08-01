@@ -1,4 +1,4 @@
-const CACHE = "futoshiki-worker-v2-fixed";
+const CACHE = "futoshiki-worker-v3-varied";
 const ASSETS = [
   "./",
   "./index.html",
