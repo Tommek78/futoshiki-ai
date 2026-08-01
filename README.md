@@ -1,10 +1,10 @@
-# Futoshiki 5×5
+# Futoshiki 6×6
 
 Eine kleine, mobilfreundliche Futoshiki-Web-App für GitHub Pages.
 
 ## Funktionen
 
-- 5×5-Spielfeld
+- 6×6-Spielfeld
 - drei Schwierigkeitsgrade
 - eindeutig lösbare Aufgaben
 - Prüfen-Button mit Markierung falscher Felder
@@ -22,4 +22,4 @@ Eine kleine, mobilfreundliche Futoshiki-Web-App für GitHub Pages.
 5. Als Branch **main** und als Ordner **/(root)** auswählen, anschließend **Save**.
 6. Nach dem Deployment zeigt GitHub dort die öffentliche Adresse an.
 
-Die App benötigt keinen Server und keine Datenbank und läuft stand-alone.
+Die App benötigt keinen Server und keine Datenbank.

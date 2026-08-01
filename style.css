@@ -113,8 +113,8 @@ button:active { transform: translateY(1px); }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr) 18px) minmax(0, 1fr);
-  grid-template-rows: repeat(4, minmax(0, 1fr) 18px) minmax(0, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr) 16px) minmax(0, 1fr);
+  grid-template-rows: repeat(5, minmax(0, 1fr) 16px) minmax(0, 1fr);
   width: 100%;
   aspect-ratio: 1;
   align-items: center;
@@ -195,9 +195,79 @@ button:active { transform: translateY(1px); }
 @media (max-width: 390px) {
   .app { padding-left: 12px; padding-right: 12px; }
   .board {
-    grid-template-columns: repeat(4, minmax(0, 1fr) 14px) minmax(0, 1fr);
-    grid-template-rows: repeat(4, minmax(0, 1fr) 14px) minmax(0, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr) 11px) minmax(0, 1fr);
+    grid-template-rows: repeat(5, minmax(0, 1fr) 11px) minmax(0, 1fr);
   }
   .actions { grid-template-columns: 1fr; }
   .toolbar { grid-template-columns: 1fr; }
+}
+
+
+.number-pad {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+.number-pad button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 10px;
+  background: var(--given);
+  color: var(--text);
+  border: 1px solid var(--line);
+  font-size: 1.12rem;
+  font-weight: 800;
+}
+.cell.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.ineq {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  transform: scaleX(.78);
+}
+.ineq.vertical {
+  transform: rotate(90deg) scaleX(.78);
+}
+
+@media (max-width: 440px) {
+  .app {
+    padding-top: max(12px, env(safe-area-inset-top));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  header { margin-bottom: 8px; }
+  h1 { font-size: 1.9rem; }
+  .toolbar { margin-bottom: 8px; gap: 8px; }
+  .game-card { padding: 10px; border-radius: 18px; }
+  .board {
+    width: min(100%, 338px);
+    margin: 0 auto;
+    grid-template-columns: repeat(5, minmax(0, 1fr) 10px) minmax(0, 1fr);
+    grid-template-rows: repeat(5, minmax(0, 1fr) 10px) minmax(0, 1fr);
+  }
+  .cell { border-radius: 8px; }
+  .cell input {
+    font-size: clamp(1.18rem, 6.8vw, 1.65rem);
+    line-height: 1;
+    padding: 0;
+  }
+  .ineq { font-size: 1.05rem; }
+  .number-pad { gap: 5px; margin-top: 10px; }
+  .number-pad button {
+    min-height: 40px;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  .message { margin-top: 8px; }
+  .actions { margin-top: 8px; gap: 8px; }
+  .rules { margin-top: 8px; }
+}
+
+@media (max-width: 440px) {
+  .board { width: min(100%, 336px); }
+  .cell input { font-size: clamp(1.05rem, 5.8vw, 1.45rem); }
+  .number-pad button { min-height: 38px; font-size: .95rem; }
 }

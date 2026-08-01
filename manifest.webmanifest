@@ -1,7 +1,7 @@
 {
-  "name": "Futoshiki 5×5",
+  "name": "Futoshiki 6×6",
   "short_name": "Futoshiki",
-  "description": "Futoshiki-Logikspiel mit drei Schwierigkeitsgraden.",
+  "description": "Futoshiki-Logikspiel im 6×6-Format mit drei Schwierigkeitsgraden.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#111827",

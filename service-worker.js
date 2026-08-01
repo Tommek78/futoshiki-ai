@@ -1,4 +1,4 @@
-const CACHE = "futoshiki-v1";
+const CACHE = "futoshiki-v3-6x6";
 const ASSETS = ["./", "./index.html", "./style.css", "./app.js", "./puzzles.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", event => {

@@ -5,10 +5,12 @@ const checkButton = document.getElementById("checkButton");
 const hintButton = document.getElementById("hintButton");
 const newGameButton = document.getElementById("newGame");
 const themeButton = document.getElementById("themeButton");
+const numberPad = document.getElementById("numberPad");
 
 let currentPuzzle = null;
 let previousPuzzleId = null;
 let hintedCells = new Set();
+let selectedInput = null;
 
 function key(r, c) {
   return `${r}-${c}`;
@@ -55,10 +57,11 @@ function clueValue(r, c) {
 function renderBoard() {
   board.innerHTML = "";
   hintedCells.clear();
+  selectedInput = null;
   setMessage();
 
-  for (let gridRow = 0; gridRow < 9; gridRow++) {
-    for (let gridCol = 0; gridCol < 9; gridCol++) {
+  for (let gridRow = 0; gridRow < 11; gridRow++) {
+    for (let gridCol = 0; gridCol < 11; gridCol++) {
       const isCellRow = gridRow % 2 === 0;
       const isCellCol = gridCol % 2 === 0;
 
@@ -72,21 +75,21 @@ function renderBoard() {
 
         const input = document.createElement("input");
         input.type = "text";
-        input.inputMode = "numeric";
-        input.pattern = "[1-5]";
+        input.inputMode = "none";
         input.maxLength = 1;
         input.autocomplete = "off";
+        input.readOnly = true;
         input.setAttribute("aria-label", `Zeile ${r + 1}, Spalte ${c + 1}`);
         input.dataset.row = r;
         input.dataset.col = c;
 
         if (value) {
           input.value = value;
-          input.readOnly = true;
           input.setAttribute("aria-readonly", "true");
         } else {
-          input.addEventListener("input", handleInput);
-          input.addEventListener("keydown", handleKeydown);
+          input.dataset.editable = "true";
+          input.addEventListener("click", () => selectInput(input));
+          input.addEventListener("focus", () => selectInput(input));
         }
 
         wrapper.appendChild(input);
@@ -104,7 +107,7 @@ function renderBoard() {
 
 function handleInput(event) {
   const input = event.target;
-  input.value = input.value.replace(/[^1-5]/g, "").slice(-1);
+  input.value = input.value.replace(/[^1-6]/g, "").slice(-1);
   input.closest(".cell").classList.remove("error", "correct");
   setMessage();
   if (input.value) moveFocus(input, 1);
@@ -124,7 +127,25 @@ function handleKeydown(event) {
 }
 
 function editableInputs() {
-  return [...board.querySelectorAll("input:not([readonly])")];
+  return [...board.querySelectorAll('input[data-editable="true"]')];
+}
+
+function selectInput(input) {
+  if (!input || input.dataset.editable !== "true" || input.dataset.hinted === "true") return;
+  board.querySelectorAll(".cell.selected").forEach(cell => cell.classList.remove("selected"));
+  selectedInput = input;
+  input.closest(".cell").classList.add("selected");
+  setMessage();
+}
+
+function enterNumber(value) {
+  if (!selectedInput) {
+    setMessage("Bitte zuerst ein freies Kästchen auswählen.");
+    return;
+  }
+  const cell = selectedInput.closest(".cell");
+  cell.classList.remove("error", "correct");
+  selectedInput.value = value === "clear" ? "" : value;
 }
 
 function moveFocus(input, offset) {
@@ -177,7 +198,8 @@ function checkGame() {
 
 function revealHint() {
   const candidates = getValues().filter(item =>
-    !item.input.readOnly &&
+    item.input.dataset.editable === "true" &&
+    item.input.dataset.hinted !== "true" &&
     item.value !== currentPuzzle.solution[item.r][item.c]
   );
 
@@ -188,7 +210,7 @@ function revealHint() {
 
   const item = candidates[Math.floor(Math.random() * candidates.length)];
   item.input.value = currentPuzzle.solution[item.r][item.c];
-  item.input.readOnly = true;
+  item.input.dataset.hinted = "true";
   const cell = item.input.closest(".cell");
   cell.classList.remove("error", "correct");
   cell.classList.add("hint");
@@ -229,6 +251,11 @@ checkButton.addEventListener("click", checkGame);
 hintButton.addEventListener("click", revealHint);
 newGameButton.addEventListener("click", newGame);
 difficultySelect.addEventListener("change", newGame);
+numberPad.addEventListener("click", event => {
+  const button = event.target.closest("button[data-number]");
+  if (!button) return;
+  enterNumber(button.dataset.number);
+});
 
 const savedDifficulty = localStorage.getItem("futoshikiDifficulty");
 if (savedDifficulty && PUZZLES[savedDifficulty]) difficultySelect.value = savedDifficulty;
