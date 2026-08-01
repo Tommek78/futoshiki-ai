@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#111827">
-  <meta name="description" content="Futoshiki 6×6 – Logikspiel mit drei Schwierigkeitsgraden.">
+  <meta name="theme-color" content="#102026">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Futoshiki 6×6</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon-192.png">
@@ -12,16 +13,22 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
-    <header>
+  <main class="app-shell">
+    <header class="topbar">
       <div>
         <p class="eyebrow">LOGIKSPIEL</p>
         <h1>Futoshiki <span>6×6</span></h1>
       </div>
-      <button id="themeButton" class="icon-button" type="button" aria-label="Darstellung wechseln">◐</button>
+      <button id="themeButton" class="round-button" aria-label="Darstellung wechseln">◐</button>
     </header>
 
-    <section class="toolbar" aria-label="Spieleinstellungen">
+    <section class="status-row">
+      <div><span>Zeit</span><strong id="timer">00:00</strong></div>
+      <div><span>Hilfen</span><strong id="hintCount">0</strong></div>
+      <div><span>Rätsel</span><strong id="puzzleLabel">–</strong></div>
+    </section>
+
+    <section class="controls">
       <label>
         Schwierigkeit
         <select id="difficulty">
@@ -30,34 +37,42 @@
           <option value="hard">Schwer</option>
         </select>
       </label>
-      <button id="newGame" class="secondary" type="button">Neues Spiel</button>
+      <button id="newGame" class="button secondary">Neu</button>
     </section>
 
     <section class="game-card">
       <div id="board" class="board" role="grid" aria-label="Futoshiki Spielfeld"></div>
-      <div id="numberPad" class="number-pad" aria-label="Zahleneingabe">
-        <button type="button" data-number="1">1</button>
-        <button type="button" data-number="2">2</button>
-        <button type="button" data-number="3">3</button>
-        <button type="button" data-number="4">4</button>
-        <button type="button" data-number="5">5</button>
-        <button type="button" data-number="6">6</button>
-        <button type="button" data-number="clear" aria-label="Feld löschen">⌫</button>
+
+      <div class="mode-row">
+        <button id="noteMode" class="mode-button" aria-pressed="false">Notizen</button>
+        <span id="modeInfo">Zahleingabe</span>
       </div>
+
+      <div id="numberPad" class="number-pad" aria-label="Zahleneingabe">
+        <button data-number="1">1</button>
+        <button data-number="2">2</button>
+        <button data-number="3">3</button>
+        <button data-number="4">4</button>
+        <button data-number="5">5</button>
+        <button data-number="6">6</button>
+        <button data-number="clear" aria-label="Feld löschen">⌫</button>
+      </div>
+
       <p id="message" class="message" aria-live="polite"></p>
     </section>
 
     <section class="actions">
-      <button id="checkButton" class="primary" type="button">Prüfen</button>
-      <button id="hintButton" class="secondary" type="button">Hilfe: Zahl aufdecken</button>
+      <button id="checkButton" class="button primary">Prüfen</button>
+      <button id="hintButton" class="button secondary">Hilfe</button>
     </section>
 
     <details class="rules">
-      <summary>So funktioniert Futoshiki</summary>
-      <p>Trage in jede Zeile und Spalte die Zahlen 1 bis 6 genau einmal ein. Die Vergleichszeichen müssen ebenfalls stimmen: Die Spitze zeigt zur kleineren Zahl.</p>
+      <summary>Spielregeln</summary>
+      <p>In jeder Zeile und Spalte müssen die Zahlen 1 bis 6 genau einmal vorkommen. Die breite Seite des Vergleichszeichens zeigt zur größeren Zahl.</p>
     </details>
   </main>
 
+  <canvas id="confetti" aria-hidden="true"></canvas>
   <script src="puzzles.js"></script>
   <script src="app.js"></script>
 </body>

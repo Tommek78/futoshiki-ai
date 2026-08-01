@@ -1,25 +1,18 @@
-# Futoshiki 6×6
+# Futoshiki 6×6 Deluxe
 
-Eine kleine, mobilfreundliche Futoshiki-Web-App für GitHub Pages.
+Mobile GitHub-Pages-App mit:
 
-## Funktionen
-
-- 6×6-Spielfeld
-- drei Schwierigkeitsgrade
-- eindeutig lösbare Aufgaben
-- Prüfen-Button mit Markierung falscher Felder
-- Hilfe-Button, der eine Zahl aufdeckt
+- drei Schwierigkeitsgraden
+- 36 eindeutig geprüften Rätseln
+- fester Zahleneingabe 1–6
+- Notizmodus
+- Prüfen und Hilfe
+- Timer und Hilfenzähler
 - Hell-/Dunkelmodus
-- als PWA zum Home-Bildschirm hinzufügbar
-- offline nutzbar, nachdem die Seite einmal geladen wurde
+- PWA- und Offline-Unterstützung
 
-## Veröffentlichung über GitHub Pages
+## GitHub Pages
 
-1. Neues GitHub-Repository anlegen.
-2. Alle Dateien aus diesem Ordner in die oberste Ebene des Repositorys hochladen.
-3. Den Upload mit **Commit changes** bestätigen.
-4. Unter **Settings → Pages** bei **Build and deployment** die Option **Deploy from a branch** wählen.
-5. Als Branch **main** und als Ordner **/(root)** auswählen, anschließend **Save**.
-6. Nach dem Deployment zeigt GitHub dort die öffentliche Adresse an.
+Alle Dateien in die oberste Ebene des Repositorys hochladen und die bestehenden Dateien ersetzen. GitHub Pages veröffentlicht aus `main` und `/(root)`.
 
-Die App benötigt keinen Server und keine Datenbank.
+Nach einem Update auf dem iPhone die Seite einmal in Safari neu laden. Bei einer installierten Home-Bildschirm-App kann ein einmaliges Entfernen und erneutes Hinzufügen nötig sein.
