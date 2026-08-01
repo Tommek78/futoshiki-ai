@@ -220,3 +220,16 @@ select { background:var(--card); color:var(--text); padding:0 36px 0 12px; }
 .cell.editable.hint input {
   color: var(--turquoise);
 }
+
+.generator-info {
+  min-height: 1.1em;
+  margin: 4px 0 0;
+  text-align: center;
+  color: var(--turquoise);
+  font-size: .74rem;
+  font-weight: 750;
+}
+button:disabled, select:disabled {
+  opacity: .55;
+  cursor: wait;
+}

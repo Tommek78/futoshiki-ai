@@ -1,18 +1,25 @@
-# Futoshiki 6×6 Deluxe
+# Futoshiki 6×6 mit Generator
 
-Mobile GitHub-Pages-App mit:
+Diese Version erzeugt jedes neue Rätsel direkt im Browser.
 
-- drei Schwierigkeitsgraden
-- 36 eindeutig geprüften Rätseln
-- fester Zahleneingabe 1–6
+## Generator
+
+- praktisch unbegrenzt viele Rätsel
+- jedes Rätsel wird vor dem Anzeigen auf eindeutige Lösbarkeit geprüft
+- drei Schwierigkeitsgrade
+- neue Seeds bei jedem Spiel
+- keine feste Rätselliste mehr
+- vollständig offline nutzbar
+
+## Bedienung
+
+- Zahlen 1–6 über die feste Leiste
 - Notizmodus
+- automatische Kandidatenpflege in Zeile und Spalte
 - Prüfen und Hilfe
 - Timer und Hilfenzähler
 - Hell-/Dunkelmodus
-- PWA- und Offline-Unterstützung
 
 ## GitHub Pages
 
-Alle Dateien in die oberste Ebene des Repositorys hochladen und die bestehenden Dateien ersetzen. GitHub Pages veröffentlicht aus `main` und `/(root)`.
-
-Nach einem Update auf dem iPhone die Seite einmal in Safari neu laden. Bei einer installierten Home-Bildschirm-App kann ein einmaliges Entfernen und erneutes Hinzufügen nötig sein.
+Alle Dateien in die oberste Ebene des Repositorys hochladen und die vorhandenen Dateien ersetzen.
