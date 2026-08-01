@@ -103,6 +103,7 @@ function renderBoard() {
         input.type="text";
         input.inputMode="none";
         input.readOnly=true;
+        input.tabIndex=-1;
         input.dataset.row=r;
         input.dataset.col=c;
         input.setAttribute("aria-label",`Zeile ${r+1}, Spalte ${c+1}`);
@@ -111,8 +112,15 @@ function renderBoard() {
           input.value=value;
         } else {
           input.dataset.editable="true";
-          input.addEventListener("click",()=>selectInput(input));
-          input.addEventListener("focus",()=>selectInput(input));
+          wrapper.classList.add("editable");
+          wrapper.addEventListener("pointerdown", event => {
+            event.preventDefault();
+            selectInput(input);
+          });
+          wrapper.addEventListener("click", event => {
+            event.preventDefault();
+            selectInput(input);
+          });
         }
 
         wrapper.appendChild(input);
@@ -145,6 +153,21 @@ function redrawNotes(r,c) {
   });
 }
 
+function removeCandidateFromPeers(r,c,n) {
+  for (let i=0;i<6;i++) {
+    const peerKeys = [key(r,i), key(i,c)];
+    for (const peerKey of peerKeys) {
+      if (peerKey === key(r,c)) continue;
+      const set = notes.get(peerKey);
+      if (set && set.delete(n)) {
+        if (set.size === 0) notes.delete(peerKey);
+        const [pr,pc] = peerKey.split("-").map(Number);
+        redrawNotes(pr,pc);
+      }
+    }
+  }
+}
+
 function enterNumber(value) {
   if (!selectedInput) {
     setMessage("Bitte zuerst ein freies Kästchen wählen.");
@@ -172,6 +195,7 @@ function enterNumber(value) {
     selectedInput.value=n;
     notes.delete(key(r,c));
     redrawNotes(r,c);
+    removeCandidateFromPeers(r,c,n);
     selectNextFree(r,c);
   }
 }
@@ -230,6 +254,7 @@ function revealHint() {
   item.input.closest(".cell").classList.add("hint");
   notes.delete(key(item.r,item.c));
   redrawNotes(item.r,item.c);
+  removeCandidateFromPeers(item.r,item.c,currentPuzzle.solution[item.r][item.c]);
   hintCount++;
   hintCountElement.textContent=hintCount;
   setMessage("Eine Zahl wurde aufgedeckt.");

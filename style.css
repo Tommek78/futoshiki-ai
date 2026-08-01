@@ -199,3 +199,16 @@ select { background:var(--card); color:var(--text); padding:0 36px 0 12px; }
   .actions { margin-top:7px; }
   .rules { margin-top:7px; }
 }
+
+
+/* Prevent iOS Safari from focusing readonly inputs and scrolling the page */
+.cell.editable {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.cell input {
+  pointer-events: none;
+  caret-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
