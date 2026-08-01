@@ -22,4 +22,4 @@ Eine kleine, mobilfreundliche Futoshiki-Web-App für GitHub Pages.
 5. Als Branch **main** und als Ordner **/(root)** auswählen, anschließend **Save**.
 6. Nach dem Deployment zeigt GitHub dort die öffentliche Adresse an.
 
-Die App benötigt keinen Server und keine Datenbank.
+Die App benötigt keinen Server und keine Datenbank und läuft stand-alone.
