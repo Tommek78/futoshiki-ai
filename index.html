@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Futoshiki 5×5 – Logikspiel mit drei Schwierigkeitsgraden.">
+  <title>Futoshiki 5×5</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <p class="eyebrow">LOGIKSPIEL</p>
+        <h1>Futoshiki <span>5×5</span></h1>
+      </div>
+      <button id="themeButton" class="icon-button" type="button" aria-label="Darstellung wechseln">◐</button>
+    </header>
+
+    <section class="toolbar" aria-label="Spieleinstellungen">
+      <label>
+        Schwierigkeit
+        <select id="difficulty">
+          <option value="easy">Leicht</option>
+          <option value="medium">Mittel</option>
+          <option value="hard">Schwer</option>
+        </select>
+      </label>
+      <button id="newGame" class="secondary" type="button">Neues Spiel</button>
+    </section>
+
+    <section class="game-card">
+      <div id="board" class="board" role="grid" aria-label="Futoshiki Spielfeld"></div>
+      <p id="message" class="message" aria-live="polite"></p>
+    </section>
+
+    <section class="actions">
+      <button id="checkButton" class="primary" type="button">Prüfen</button>
+      <button id="hintButton" class="secondary" type="button">Hilfe: Zahl aufdecken</button>
+    </section>
+
+    <details class="rules">
+      <summary>So funktioniert Futoshiki</summary>
+      <p>Trage in jede Zeile und Spalte die Zahlen 1 bis 5 genau einmal ein. Die Vergleichszeichen müssen ebenfalls stimmen: Die Spitze zeigt zur kleineren Zahl.</p>
+    </details>
+  </main>
+
+  <script src="puzzles.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
