@@ -1,25 +1,17 @@
-# Futoshiki 6×6 mit Generator
+# Futoshiki 6×6 mit Web-Worker-Generator
 
-Diese Version erzeugt jedes neue Rätsel direkt im Browser.
+Der Generator läuft in `worker.js` und blockiert die Oberfläche nicht.
 
-## Generator
+## Eigenschaften
 
-- praktisch unbegrenzt viele Rätsel
-- jedes Rätsel wird vor dem Anzeigen auf eindeutige Lösbarkeit geprüft
+- praktisch unbegrenzt viele 6×6-Rätsel
+- Prüfung auf eindeutige Lösbarkeit
 - drei Schwierigkeitsgrade
-- neue Seeds bei jedem Spiel
-- keine feste Rätselliste mehr
-- vollständig offline nutzbar
+- Generator mit Zeitlimit und sauberer Fehlerbehandlung
+- Bedienoberfläche bleibt während der Erzeugung reaktionsfähig
+- Notizen, automatische Kandidatenpflege, Prüfen, Hilfe und Timer
+- GitHub-Pages- und PWA-fähig
 
-## Bedienung
+## Veröffentlichung
 
-- Zahlen 1–6 über die feste Leiste
-- Notizmodus
-- automatische Kandidatenpflege in Zeile und Spalte
-- Prüfen und Hilfe
-- Timer und Hilfenzähler
-- Hell-/Dunkelmodus
-
-## GitHub Pages
-
-Alle Dateien in die oberste Ebene des Repositorys hochladen und die vorhandenen Dateien ersetzen.
+Alle Dateien in die oberste Ebene des Repositorys hochladen und vorhandene Dateien ersetzen.

@@ -47,221 +47,73 @@ function updateTimer() {
   timerElement.textContent = `${min}:${sec}`;
 }
 
-/* ---------- Seeded random generator ---------- */
-function xmur3(str) {
-  let h = 1779033703 ^ str.length;
-  for (let i=0;i<str.length;i++) {
-    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
-    h = h << 13 | h >>> 19;
+/* ---------- Background generator ---------- */
+let generatorWorker = null;
+let generationRequest = 0;
+
+function ensureGeneratorWorker() {
+  if (!generatorWorker) {
+    generatorWorker = new Worker("./worker.js");
   }
-  return function() {
-    h = Math.imul(h ^ (h >>> 16), 2246822507);
-    h = Math.imul(h ^ (h >>> 13), 3266489909);
-    return (h ^= h >>> 16) >>> 0;
-  };
+  return generatorWorker;
 }
 
-function mulberry32(a) {
-  return function() {
-    let t = a += 0x6D2B79F5;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
+function createGeneratedPuzzle(level) {
+  const requestId = ++generationRequest;
+  const worker = ensureGeneratorWorker();
 
-function shuffle(array, rng) {
-  const a = [...array];
-  for (let i=a.length-1;i>0;i--) {
-    const j = Math.floor(rng()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
-
-function makeSolution(rng) {
-  const symbols = shuffle([1,2,3,4,5,6], rng);
-  const rows = shuffle([0,1,2,3,4,5], rng);
-  const cols = shuffle([0,1,2,3,4,5], rng);
-  return rows.map(r => cols.map(c => symbols[(r+c)%N]));
-}
-
-function allEdges(solution) {
-  const edges = [];
-  for (let r=0;r<N;r++) {
-    for (let c=0;c<N-1;c++) {
-      edges.push({
-        a:[r,c], b:[r,c+1],
-        rel: solution[r][c] < solution[r][c+1] ? "<" : ">"
-      });
-    }
-  }
-  for (let r=0;r<N-1;r++) {
-    for (let c=0;c<N;c++) {
-      edges.push({
-        a:[r,c], b:[r+1,c],
-        rel: solution[r][c] < solution[r+1][c] ? "<" : ">"
-      });
-    }
-  }
-  return edges;
-}
-
-function countSolutions(clues, inequalities, limit=2) {
-  const grid = Array.from({length:N},()=>Array(N).fill(0));
-  const rowUsed = Array.from({length:N},()=>new Set());
-  const colUsed = Array.from({length:N},()=>new Set());
-  const relationMap = new Map();
-
-  function addRel(a,b,rel) {
-    const k = key(a[0],a[1]);
-    if (!relationMap.has(k)) relationMap.set(k,[]);
-    relationMap.get(k).push({other:b,rel});
-  }
-
-  inequalities.forEach(item => {
-    addRel(item.a,item.b,item.rel);
-    addRel(item.b,item.a,item.rel === "<" ? ">" : "<");
-  });
-
-  for (const clue of clues) {
-    const {r,c,v} = clue;
-    if (rowUsed[r].has(v) || colUsed[c].has(v)) return 0;
-    grid[r][c]=v;
-    rowUsed[r].add(v);
-    colUsed[c].add(v);
-  }
-
-  function valid(r,c,v) {
-    for (const rule of relationMap.get(key(r,c)) || []) {
-      const [rr,cc] = rule.other;
-      const ov = grid[rr][cc];
-      if (!ov) continue;
-      if (rule.rel === "<" && !(v < ov)) return false;
-      if (rule.rel === ">" && !(v > ov)) return false;
-    }
-    return true;
-  }
-
-  let solutions = 0;
-
-  function search() {
-    if (solutions >= limit) return;
-
-    let best = null;
-    let candidates = null;
-
-    for (let r=0;r<N;r++) {
-      for (let c=0;c<N;c++) {
-        if (grid[r][c] !== 0) continue;
-        const vals = [];
-        for (let v=1;v<=N;v++) {
-          if (!rowUsed[r].has(v) && !colUsed[c].has(v) && valid(r,c,v)) vals.push(v);
-        }
-        if (!vals.length) return;
-        if (!candidates || vals.length < candidates.length) {
-          best=[r,c];
-          candidates=vals;
-          if (vals.length===1) break;
-        }
-      }
-      if (candidates?.length===1) break;
-    }
-
-    if (!best) {
-      solutions++;
-      return;
-    }
-
-    const [r,c]=best;
-    for (const v of candidates) {
-      grid[r][c]=v;
-      rowUsed[r].add(v);
-      colUsed[c].add(v);
-      search();
-      rowUsed[r].delete(v);
-      colUsed[c].delete(v);
-      grid[r][c]=0;
-      if (solutions >= limit) return;
-    }
-  }
-
-  search();
-  return solutions;
-}
-
-function difficultyConfig(level) {
-  return {
-    easy:   {targetClues:12, targetIneq:24, label:"Leicht"},
-    medium: {targetClues:8,  targetIneq:21, label:"Mittel"},
-    hard:   {targetClues:5,  targetIneq:18, label:"Schwer"}
-  }[level];
-}
-
-function generatePuzzle(level, seedText) {
-  const cfg = difficultyConfig(level);
-  const seedFn = xmur3(seedText);
-  const rng = mulberry32(seedFn());
-
-  for (let attempt=0; attempt<40; attempt++) {
-    const solution = makeSolution(rng);
-    const coords = shuffle(
-      Array.from({length:N*N},(_,i)=>[Math.floor(i/N),i%N]),
-      rng
-    );
-    const edges = shuffle(allEdges(solution), rng);
-
-    let clues = coords.slice(0,cfg.targetClues).map(([r,c])=>({r,c,v:solution[r][c]}));
-    let inequalities = edges.slice(0,cfg.targetIneq);
-
-    // Add information until the puzzle is unique.
-    let clueIndex = cfg.targetClues;
-    let edgeIndex = cfg.targetIneq;
-    let guard = 0;
-
-    while (countSolutions(clues,inequalities,2) !== 1 && guard < 40) {
-      const addEdgeFirst = edgeIndex < edges.length && (clueIndex >= coords.length || rng() > 0.35);
-      if (addEdgeFirst) {
-        inequalities.push(edges[edgeIndex++]);
-      } else if (clueIndex < coords.length) {
-        const [r,c] = coords[clueIndex++];
-        clues.push({r,c,v:solution[r][c]});
-      }
-      guard++;
-    }
-
-    if (countSolutions(clues,inequalities,2) === 1) {
-      return {
-        id: seedText,
-        level,
-        solution,
-        clues,
-        inequalities
-      };
-    }
-  }
-
-  throw new Error("Es konnte kein eindeutiges Rätsel erzeugt werden.");
-}
-
-async function createGeneratedPuzzle(level) {
   generatorInfo.textContent = "Neues Rätsel wird erzeugt …";
   newGameButton.disabled = true;
   difficultySelect.disabled = true;
 
-  await new Promise(resolve => setTimeout(resolve, 20));
+  return new Promise((resolve, reject) => {
+    const timeout = window.setTimeout(() => {
+      worker.terminate();
+      generatorWorker = null;
+      reject(new Error("Die Erzeugung hat zu lange gedauert."));
+    }, 8000);
 
-  try {
+    function cleanup() {
+      window.clearTimeout(timeout);
+      worker.removeEventListener("message", onMessage);
+      worker.removeEventListener("error", onError);
+      newGameButton.disabled = false;
+      difficultySelect.disabled = false;
+    }
+
+    function onMessage(event) {
+      if (requestId !== generationRequest) return;
+      const data = event.data || {};
+      cleanup();
+
+      if (data.type === "success") {
+        generatorInfo.textContent = "";
+        resolve(data.puzzle);
+      } else {
+        reject(new Error(data.message || "Unbekannter Generatorfehler."));
+      }
+    }
+
+    function onError(event) {
+      cleanup();
+      reject(new Error(event.message || "Der Generator ist abgestürzt."));
+    }
+
+    worker.addEventListener("message", onMessage);
+    worker.addEventListener("error", onError);
+
     puzzleCounter++;
     localStorage.setItem("futoshikiPuzzleCounter", String(puzzleCounter));
-    const seed = `${Date.now()}-${puzzleCounter}-${level}-${crypto.getRandomValues(new Uint32Array(1))[0]}`;
-    const puzzle = generatePuzzle(level, seed);
-    generatorInfo.textContent = "";
-    return puzzle;
-  } finally {
-    newGameButton.disabled = false;
-    difficultySelect.disabled = false;
-  }
+
+    const randomPart = crypto.getRandomValues(new Uint32Array(1))[0];
+    const seed = `${Date.now()}-${puzzleCounter}-${level}-${randomPart}`;
+
+    worker.postMessage({
+      type: "generate",
+      level,
+      seed
+    });
+  });
 }
 
 /* ---------- Board UI ---------- */
@@ -501,20 +353,33 @@ function finishGame() {
 }
 
 async function newGame() {
-  const level=difficultySelect.value;
-  currentPuzzle=await createGeneratedPuzzle(level);
-  notes=new Map();
-  hintCount=0;
-  hintCountElement.textContent="0";
-  puzzleLabel.textContent=String(puzzleCounter);
-  completed=false;
-  startTime=Date.now();
-  clearInterval(timerHandle);
-  timerHandle=setInterval(updateTimer,1000);
-  updateTimer();
-  renderBoard();
-  setMessage();
-  localStorage.setItem("futoshikiDifficulty",level);
+  const level = difficultySelect.value;
+
+  try {
+    currentPuzzle = await createGeneratedPuzzle(level);
+    notes = new Map();
+    hintCount = 0;
+    hintCountElement.textContent = "0";
+    puzzleLabel.textContent = String(puzzleCounter);
+    completed = false;
+    startTime = Date.now();
+
+    clearInterval(timerHandle);
+    timerHandle = setInterval(updateTimer,1000);
+    updateTimer();
+
+    renderBoard();
+    setMessage();
+    localStorage.setItem("futoshikiDifficulty", level);
+  } catch (error) {
+    generatorInfo.textContent = "";
+    setMessage(
+      `${error.message} Bitte erneut auf „Neu“ tippen.`,
+      "error-text"
+    );
+    newGameButton.disabled = false;
+    difficultySelect.disabled = false;
+  }
 }
 
 function toggleNoteMode() {
