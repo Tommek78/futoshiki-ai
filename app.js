@@ -57,14 +57,18 @@ function inequalityAt(r,c,direction) {
 }
 
 function inequalitySvg(rel) {
-  // Broad, blunt angle rather than a sharp text glyph.
-  const path = rel === "<" ? "M 13 2 L 4 8 L 13 14" : "M 3 2 L 12 8 L 3 14";
-  return `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="${path}"/></svg>`;
+  // Small, broad chevrons with a blunt opening angle.
+  const path = rel === "<"
+    ? "M 8.2 2.8 L 3.8 5 L 8.2 7.2"
+    : "M 1.8 2.8 L 6.2 5 L 1.8 7.2";
+  return `<svg viewBox="0 0 10 10" aria-hidden="true"><path d="${path}"/></svg>`;
 }
 
 function addInequality(r,c,direction) {
   const holder = document.createElement("div");
   holder.className = `ineq ${direction === "vertical" ? "vertical" : ""}`;
+  holder.style.gridRow = direction === "horizontal" ? String(r * 2 + 1) : String(r * 2 + 2);
+  holder.style.gridColumn = direction === "horizontal" ? String(c * 2 + 2) : String(c * 2 + 1);
   const item = inequalityAt(r,c,direction);
   if (item) holder.innerHTML = inequalitySvg(item.rel);
   board.appendChild(holder);

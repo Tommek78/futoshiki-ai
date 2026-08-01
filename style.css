@@ -94,8 +94,8 @@ select { background:var(--card); color:var(--text); padding:0 36px 0 12px; }
 
 .board {
   display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr) 10px) minmax(0,1fr);
-  grid-template-rows:repeat(5,minmax(0,1fr) 10px) minmax(0,1fr);
+  grid-template-columns:repeat(5,minmax(0,1fr) 9px) minmax(0,1fr);
+  grid-template-rows:repeat(5,minmax(0,1fr) 9px) minmax(0,1fr);
   width:min(100%,336px); aspect-ratio:1; margin:0 auto;
   align-items:center; justify-items:center;
 }
@@ -124,13 +124,35 @@ select { background:var(--card); color:var(--text); padding:0 36px 0 12px; }
 }
 .notes span { display:grid; place-items:center; }
 
-.ineq { width:100%; height:100%; display:grid; place-items:center; }
-.ineq svg { width:16px; height:16px; overflow:visible; }
-.ineq path {
-  fill:none; stroke:var(--orange); stroke-width:3.2;
-  stroke-linecap:round; stroke-linejoin:round;
+.ineq {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  justify-self: stretch;
+  line-height: 0;
+  overflow: visible;
 }
-.ineq.vertical svg { transform:rotate(90deg); }
+.ineq svg {
+  width: 10px;
+  height: 10px;
+  display: block;
+  overflow: visible;
+}
+.ineq path {
+  fill: none;
+  stroke: var(--turquoise);
+  stroke-width: 1.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .82;
+  vector-effect: non-scaling-stroke;
+}
+.ineq.vertical svg {
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
+}
 
 .mode-row {
   display:flex; justify-content:space-between; align-items:center;
